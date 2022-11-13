@@ -1,3 +1,11 @@
 <resources>
     <string name="app_name">NotesApp</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="search_string">Search</string>
+    <string name="delete">delete</string>
+    <string name="change_title">Change Title</string>
+    <string name="new_note">New Note</string>
+    <string name="save">Save</string>
+    <string name="go_back">Go Back</string>
 </resources>

@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/search"
+        android:icon="@drawable/search_icon"
+        app:showAsAction="collapseActionView|ifRoom"
+        app:actionViewClass="android.widget.SearchView"
+        android:title="@string/search_string" />
 
+    <item
+        android:id="@+id/add_action"
+        app:showAsAction="ifRoom"
+        android:src="@drawable/plus"
+        android:title="@string/new_note" />
 </menu>
