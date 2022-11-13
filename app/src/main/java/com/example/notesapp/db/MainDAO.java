@@ -1,5 +1,7 @@
 package com.example.notesapp.db;
 
+import static androidx.room.OnConflictStrategy.REPLACE;
+
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -8,12 +10,12 @@ import com.example.notesapp.Models.Notes;
 import java.util.List;
 
 @Dao
-public interface DAO {
+public interface MainDAO {
 
-    @Insert
+    @Insert(onConflict = REPLACE)
     void insert(Notes note);
 
-    @Query("SELECT * FROM notes ORDER BY id DESC")
+    @Query("SELECT * FROM DBnotes ORDER BY id DESC")
     List<Notes> getAll();
 
     @Query("UPDATE notes SET title = :title, note = :notes WHERE ID = :id")
