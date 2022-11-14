@@ -50,6 +50,8 @@ public class MainActivity extends AppCompatActivity implements fragmentInterface
     public void getNoteTaker(){
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.remove(frag2);
+        frag2 = new NoteTaker();
         fragmentTransaction.replace(R.id.relativeLayout, frag2);
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();

@@ -144,6 +144,7 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
         int id = item.getItemId();
         if (id == R.id.add_action) {
             ((MainActivity)getActivity()).getNoteTaker();
+            System.out.println("new note");
         }
         return super.onOptionsItemSelected(item);
     }

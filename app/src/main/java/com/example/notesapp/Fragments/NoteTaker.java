@@ -81,10 +81,9 @@ public class NoteTaker extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_note_taker, container, false);
-        save = (ImageView) root.findViewById(R.id.save);
         editTitle = (EditText) root.findViewById(R.id.editTitle);
         editNote = (EditText) root.findViewById(R.id.editNote);
-
+        setHasOptionsMenu(true);
         Bundle bundle = this.getArguments();
 
         if (bundle!=null){
@@ -93,33 +92,6 @@ public class NoteTaker extends Fragment {
             editNote.setText(notes.getNote());
         }
 
-        save.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String title = editTitle.getText().toString();
-                String note = editNote.getText().toString();
-                SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, d MMM yyyy HH:mm a");
-                Date date = new Date();
-                if(bundle==null){
-                    notes = new Notes();
-                }
-                notes.setTitle(title);
-                notes.setNote(note);
-                notes.setDate(dateFormatter.format(date));
-
-
-                Bundle bundleRes = new Bundle();
-                if(bundle == null){
-                    bundleRes.putString("req", "insert");
-                }
-                else{
-                    bundleRes.putString("req", "update");
-                }
-                bundleRes.putSerializable("note", notes);
-                ((MainActivity)getActivity()).getFrag1(bundleRes);
-            
-            }
-        });
 
         return root;
     }
@@ -127,8 +99,8 @@ public class NoteTaker extends Fragment {
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_frag_2, menu);
-        MenuItem back = menu.findItem(R.id.go_back);
-        MenuItem save_button = menu.findItem(R.id.save_button);
+        MenuItem back = (MenuItem) menu.findItem(R.id.go_back);
+        MenuItem save_button =(MenuItem)menu.findItem(R.id.save_button);
         super.onCreateOptionsMenu(menu,inflater);
 
     }
@@ -139,7 +111,7 @@ public class NoteTaker extends Fragment {
         if (id == R.id.go_back) {
             ((MainActivity)getActivity()).getFrag1();
         }
-        if (id == R.id.save){
+        if (id == R.id.save_button){
             Bundle bundle = this.getArguments();
             String title = editTitle.getText().toString();
             String note = editNote.getText().toString();

@@ -4,7 +4,8 @@
     <item
         android:id="@+id/save_button"
         android:icon="@drawable/save"
-        android:title="@string/save" />
+        android:title="@string/save"
+        app:showAsAction="ifRoom"/>
 
     <item
         android:id="@+id/go_back"
