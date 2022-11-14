@@ -198,6 +198,7 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
         switch (menuItem.getItemId()){
             case R.id.delete:
                 db.dao().delete(selectedNote);
+                updateRecycler(db.dao().getAll());
                 return true;
             case R.id.change_title:
                 AlertDialog.Builder alert = new AlertDialog.Builder((MainActivity)getActivity());
