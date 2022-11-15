@@ -29,18 +29,20 @@ import com.example.notesapp.MainActivity;
 import com.example.notesapp.Models.Notes;
 import com.example.notesapp.R;
 import com.example.notesapp.RecyclerViewInterface;
+import com.example.notesapp.TaskManager.TaskManager;
 import com.example.notesapp.db.DB;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link Fragment1#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupMenu.OnMenuItemClickListener {
+public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupMenu.OnMenuItemClickListener, TaskManager.Callback {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -52,11 +54,12 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
     private String mParam2;
     RecyclerView recyclerView;
     NotesAdapter notesAdapter;
-    List<Notes> notes = new ArrayList<>();
     DB db ;
     FloatingActionButton add;
     View root;
     Notes selectedNote;
+    TaskManager taskManager = new TaskManager();
+    
     public Fragment1() {
         // Required empty public constructor
     }
@@ -98,20 +101,21 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
         db = DB.getInstance(getActivity());
         setHasOptionsMenu(true);
         Bundle bundle = this.getArguments();
-        if (bundle!=null){
-            Notes new_note = (Notes) bundle.getSerializable("note");
-            if(bundle.getString("req") == "insert"){
-                db.dao().insert(new_note);
-            }
-            else{
-                db.dao().update(new_note.getID(), new_note.getTitle(), new_note.getNote());
-            }
-            notesAdapter.notifyDataSetChanged();
-        }
-        notes.clear();
-        notes = db.dao().getAll();
-        updateRecycler(notes);
+         taskManager.executeOnCreateView(notesAdapter, bundle, db, this);
+
         return root;
+    }
+
+    //calling this in onQueryTextChange != Callback callback, so had to create this function
+    public void onQueryTextChangeAuxiliary(String s){
+        taskManager.executeOnQueryTextChange(db, s, this);
+    }
+
+    //onQueryTextChange task manager goes here
+    public void queryChangeHelper(List<Notes> newNotes, String s){
+        updateRecycler(newNotes);
+        notesAdapter.getFilter().filter(s);
+        notesAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -128,15 +132,11 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
 
             @Override
             public boolean onQueryTextChange(String s) {
-                notes = db.dao().getAll();
-                updateRecycler(notes);
-                notesAdapter.getFilter().filter(s);
-                notesAdapter.notifyDataSetChanged();
+                onQueryTextChangeAuxiliary(s);
                 return false;
             }
         });
         super.onCreateOptionsMenu(menu,inflater);
-
     }
 
     @Override
@@ -149,27 +149,25 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
         return super.onOptionsItemSelected(item);
     }
 
-    private void updateRecycler(List<Notes> notes) {
+    public void updateRecycler(List<Notes> notes) {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, LinearLayoutManager.VERTICAL));
         notesAdapter = new NotesAdapter((MainActivity)getActivity(), notes, this);
         recyclerView.setAdapter(notesAdapter);
     }
 
-    @Override
-    public void onItemClick(int position) {
+    //onItemClick task manager goes here
+    public void itemClickHelper(Notes note){
         Bundle bundle = new Bundle();
-        Notes note = null;
-        int id = notesAdapter.getID(position);
-        for (Notes x : db.dao().getAll()){
-            if(x.getID() ==  id){
-                note = x;
-                break;
-            }
-        }
         bundle.putSerializable("old_note", note);
         System.out.println(((Notes)bundle.getSerializable("old_note")).getTitle());
         ((MainActivity)getActivity()).getNoteTaker(bundle);
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        taskManager.executeOnItemClick(notesAdapter, db, position, this);
+
     }
 
     @Override
@@ -177,28 +175,32 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
         updateRecycler(filteredList);
     }
 
-    @Override
-    public void LongItemClick(int position) {
-        int id = notesAdapter.getID(position);
-        for (Notes x : db.dao().getAll()){
-            if(x.getID() ==  id){
-                selectedNote = x;
-                break;
-            }
-        }
+
+
+    public void LongItemClickHelper(Notes newSelected){
+        selectedNote = newSelected;
         PopupMenu popupMenu = new PopupMenu((MainActivity)getActivity(), recyclerView);
         popupMenu.setOnMenuItemClickListener(this);
         popupMenu.inflate(R.menu.popup_menu);
         popupMenu.show();
+    }
 
+    @Override
+    public void LongItemClick(int position) {
+        taskManager.executeLongItemClick(notesAdapter, db, position,this);
+    }
+
+
+    //calling this in onMenuItemClick:onClick != Callback callback, so had to create this function
+    public void updateAuxiliary(String value){
+        taskManager.executeUpdateItem(db, selectedNote, value, this);
     }
 
     @Override
     public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()){
             case R.id.delete:
-                db.dao().delete(selectedNote);
-                updateRecycler(db.dao().getAll());
+                taskManager.executeDeleteItem(db, selectedNote,this);
                 return true;
             case R.id.change_title:
                 AlertDialog.Builder alert = new AlertDialog.Builder((MainActivity)getActivity());
@@ -212,8 +214,7 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
                 alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String value = input.getText().toString();
-                        db.dao().update(selectedNote.getID(), value, selectedNote.getNote());
-                        updateRecycler(db.dao().getAll());
+                        updateAuxiliary(value);
                         return;
                     }
                 });
@@ -227,7 +228,7 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
                         });
                 alert.show();
         }
-        updateRecycler(db.dao().getAll());
+        taskManager.executeUpdateRecycler(db, this);
         return false;
     }
 }
