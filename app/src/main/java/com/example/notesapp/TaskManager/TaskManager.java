@@ -30,7 +30,7 @@ public class TaskManager {
     public void executeOnCreateView(NotesAdapter notesAdapter, Bundle bundle, DB db, Callback callback){
         executor.execute(() -> {
             List<Notes> notes = new ArrayList<>();
-            if (bundle!=null){
+            if (bundle != null){
                 Notes new_note = (Notes) bundle.getSerializable("note");
                 if(Objects.equals(bundle.getString("req"), "insert")){
                     db.dao().insert(new_note);
@@ -92,9 +92,7 @@ public class TaskManager {
     public void executeUpdateItem(DB db, Notes selectedNote, String value, Callback callback){
         executor.execute(() -> {
             List<Notes> notes = new ArrayList<>();
-
             db.dao().update(selectedNote.getID(), value, selectedNote.getNote());
-
             notes = db.dao().getAll();
             List<Notes> finalNotes = notes;
             handler.post(() ->{

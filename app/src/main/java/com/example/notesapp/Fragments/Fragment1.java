@@ -8,6 +8,8 @@ import android.os.Bundle;
 
 
 import android.util.Log;
+import android.view.ContextThemeWrapper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -59,7 +61,7 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
     View root;
     Notes selectedNote;
     TaskManager taskManager = new TaskManager();
-    
+
     public Fragment1() {
         // Required empty public constructor
     }
@@ -101,8 +103,7 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
         db = DB.getInstance(getActivity());
         setHasOptionsMenu(true);
         Bundle bundle = this.getArguments();
-         taskManager.executeOnCreateView(notesAdapter, bundle, db, this);
-
+        taskManager.executeOnCreateView(notesAdapter, bundle, db, this);
         return root;
     }
 
@@ -179,7 +180,11 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
 
     public void LongItemClickHelper(Notes newSelected){
         selectedNote = newSelected;
-        PopupMenu popupMenu = new PopupMenu((MainActivity)getActivity(), recyclerView);
+
+        //fix popupMenu so it overlaps now
+        ContextThemeWrapper contextThemeWrapper = new ContextThemeWrapper(getContext(), R.style.PopupMenuOverlapAnchor);
+        PopupMenu popupMenu = new PopupMenu(contextThemeWrapper, recyclerView);
+
         popupMenu.setOnMenuItemClickListener(this);
         popupMenu.inflate(R.menu.popup_menu);
         popupMenu.show();

@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity implements fragmentInterface
 
     public void getFrag1() {
         FragmentManager fragmentManager = getFragmentManager();
+        //clean bundle
+        frag1.setArguments(null);
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.relativeLayout, frag1);
         fragmentTransaction.addToBackStack(null);

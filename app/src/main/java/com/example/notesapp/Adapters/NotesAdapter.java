@@ -102,7 +102,8 @@ public class NotesAdapter extends RecyclerView.Adapter<NotesAdapter.NotesViewHol
             } else {
                 String filterPattern = constraint.toString().toLowerCase().trim();
                 for (Notes item : list) {
-                    if (item.getTitle().toLowerCase().contains(filterPattern) || item.getNote().toLowerCase().contains(filterPattern)) {
+                    //if (item.getTitle().toLowerCase().contains(filterPattern) || item.getNote().toLowerCase().contains(filterPattern)) {
+                    if (item.getTitle().toLowerCase().contains(filterPattern)) {
                         filteredList.add(item);
                     }
                 }
