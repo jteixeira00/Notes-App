@@ -124,7 +124,6 @@ public class NoteTaker extends Fragment {
             notes.setNote(note);
             notes.setDate(dateFormatter.format(date));
 
-
             Bundle bundleRes = new Bundle();
             if(bundle == null){
                 bundleRes.putString("req", "insert");
@@ -137,8 +136,6 @@ public class NoteTaker extends Fragment {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
 
     @Override
     public void onResume(){

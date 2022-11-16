@@ -1,9 +1,12 @@
 package com.example.notesapp.Fragments;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.AlertDialog;
 import android.app.Fragment;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 
@@ -16,6 +19,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
@@ -27,14 +31,26 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 
 import com.example.notesapp.Adapters.NotesAdapter;
+import com.example.notesapp.MQTTHelper;
 import com.example.notesapp.MainActivity;
 import com.example.notesapp.Models.Notes;
+import com.example.notesapp.Models.Topic;
 import com.example.notesapp.R;
 import com.example.notesapp.RecyclerViewInterface;
 import com.example.notesapp.TaskManager.TaskManager;
 import com.example.notesapp.db.DB;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
+import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken;
+import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
+import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+
+import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -50,10 +66,12 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    public static MQTTHelper helper;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    Button topicsBtn;
     RecyclerView recyclerView;
     NotesAdapter notesAdapter;
     DB db ;
@@ -91,7 +109,6 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-
     }
 
     @Override
@@ -99,11 +116,23 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment1, container, false);
+        topicsBtn = (Button) root.findViewById(R.id.topics);
         recyclerView = (RecyclerView) root.findViewById(R.id.recycler);
         db = DB.getInstance(getActivity());
         setHasOptionsMenu(true);
         Bundle bundle = this.getArguments();
         taskManager.executeOnCreateView(notesAdapter, bundle, db, this);
+
+        topicsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity)getActivity()).getTopics();
+            }
+        });
+        Log.d("yoyo", "start");
+        connect();
+        //checkTopics();
+        Log.d("yoyo", "after connect");
         return root;
     }
 
@@ -235,5 +264,73 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
         }
         taskManager.executeUpdateRecycler(db, this);
         return false;
+    }
+
+    private void checkTopics(){
+        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("TOPIC", MODE_PRIVATE);
+
+        Gson gson = new Gson();
+        String json = sharedPreferences.getString("topics", null);
+        Type type = new TypeToken<ArrayList<Topic>>() {
+
+        }.getType();
+
+        ArrayList <Topic> topicsArray = gson.fromJson(json, type);
+
+        if(topicsArray.size()>0)connect();
+    }
+
+    private void connect() {
+        helper = new MQTTHelper(getActivity(), "clientId-vcvCWavi23", "testtopic/yoyo");
+
+        helper.setCallback(new MqttCallbackExtended() {
+            @Override
+            public void connectComplete(boolean reconnect, String serverURI) {
+                helper.subscribeToTopic("testtopic/yoyo");
+                //for(int i = 0; i < topicsArray.size(); i++) helper.subscribeToTopic(topicsArray.get(i).topicName, topicsArray.get(i).qos);
+                Log.d("connected", "CONNECTED CRL");
+            }
+
+            @Override
+            public void connectionLost(Throwable cause) {
+                helper.stop();
+            }
+
+            @Override
+            public void messageArrived(String topic, MqttMessage message) throws Exception {
+                /*ArrayList<String> noteInfo = new ArrayList<String>();
+                noteInfo.add(message.toString());*/
+                Log.d("messageArrived", "msg:"+message);
+            }
+
+            @Override
+            public void deliveryComplete(IMqttDeliveryToken token) {
+
+            }
+        });
+
+        helper.connect();
+    }
+
+    public void publishMessage(MQTTHelper client, Notes note, int qos, String topic, boolean init){
+        try{
+            byte[] encodedPayload;
+            String[] msg = new String[3];
+            if(init) {
+                msg[0] = note.getTitle();
+                msg[1] = note.getNote();
+                msg[2] = note.getDate();
+            }
+            Gson gson = new Gson();
+            String json = gson.toJson(msg); //não aceita arrays
+
+            encodedPayload = json.getBytes(StandardCharsets.UTF_8);
+            MqttMessage message = new MqttMessage(encodedPayload);
+            message.setQos(qos);
+
+            client.mqttAndroidClient.publish(topic, message);
+        } catch (MqttException e){
+            Log.w("O", "MqttException");
+        }
     }
 }

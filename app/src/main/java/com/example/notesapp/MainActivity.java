@@ -9,6 +9,7 @@ import android.os.Bundle;
 
 import com.example.notesapp.Fragments.Fragment1;
 import com.example.notesapp.Fragments.NoteTaker;
+import com.example.notesapp.Fragments.Topics;
 
 
 interface fragmentInterface{
@@ -18,6 +19,7 @@ interface fragmentInterface{
 public class MainActivity extends AppCompatActivity implements fragmentInterface{
     Fragment frag1 = new Fragment1();
     Fragment frag2 = new NoteTaker();
+    Fragment frag3 = new Topics();
 
 
     @Override
@@ -48,7 +50,6 @@ public class MainActivity extends AppCompatActivity implements fragmentInterface
         fragmentTransaction.commit();
     }
 
-
     public void getNoteTaker(){
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -68,7 +69,22 @@ public class MainActivity extends AppCompatActivity implements fragmentInterface
         fragmentTransaction.commit();
     }
 
+    public void getTopics(){
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.remove(frag3);
+        frag3 = new Topics();
+        fragmentTransaction.replace(R.id.relativeLayout, frag3);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
 
-
-
+    public void getTopics(Bundle bundle){
+        FragmentManager fragmentManager = getFragmentManager();
+        frag3.setArguments(bundle);
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.relativeLayout, frag3);
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
 }
