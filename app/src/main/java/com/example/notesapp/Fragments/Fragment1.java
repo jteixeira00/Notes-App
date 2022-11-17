@@ -51,7 +51,9 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -66,7 +68,6 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    public static MQTTHelper helper;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -79,6 +80,7 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
     View root;
     Notes selectedNote;
     TaskManager taskManager = new TaskManager();
+    Notes notes;
 
     public Fragment1() {
         // Required empty public constructor
@@ -116,23 +118,12 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment1, container, false);
-        topicsBtn = (Button) root.findViewById(R.id.topics);
         recyclerView = (RecyclerView) root.findViewById(R.id.recycler);
         db = DB.getInstance(getActivity());
         setHasOptionsMenu(true);
         Bundle bundle = this.getArguments();
         taskManager.executeOnCreateView(notesAdapter, bundle, db, this);
 
-        topicsBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ((MainActivity)getActivity()).getTopics();
-            }
-        });
-        Log.d("yoyo", "start");
-        connect();
-        //checkTopics();
-        Log.d("yoyo", "after connect");
         return root;
     }
 
@@ -152,6 +143,7 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.menu_frag_1, menu);
         MenuItem menuItem = menu.findItem(R.id.search);
+        MenuItem toTopics = menu.findItem(R.id.to_topics);
         SearchView searchView = (SearchView)menuItem.getActionView();
         searchView.setQueryHint("Search for a note");
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -175,6 +167,8 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
         if (id == R.id.add_action) {
             ((MainActivity)getActivity()).getNoteTaker();
             System.out.println("new note");
+        } else if(id == R.id.to_topics){
+            ((MainActivity)getActivity()).getTopics();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -266,71 +260,5 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
         return false;
     }
 
-    private void checkTopics(){
-        SharedPreferences sharedPreferences = getActivity().getSharedPreferences("TOPIC", MODE_PRIVATE);
 
-        Gson gson = new Gson();
-        String json = sharedPreferences.getString("topics", null);
-        Type type = new TypeToken<ArrayList<Topic>>() {
-
-        }.getType();
-
-        ArrayList <Topic> topicsArray = gson.fromJson(json, type);
-
-        if(topicsArray.size()>0)connect();
-    }
-
-    private void connect() {
-        helper = new MQTTHelper(getActivity(), "clientId-vcvCWavi23", "testtopic/yoyo");
-
-        helper.setCallback(new MqttCallbackExtended() {
-            @Override
-            public void connectComplete(boolean reconnect, String serverURI) {
-                helper.subscribeToTopic("testtopic/yoyo");
-                //for(int i = 0; i < topicsArray.size(); i++) helper.subscribeToTopic(topicsArray.get(i).topicName, topicsArray.get(i).qos);
-                Log.d("connected", "CONNECTED CRL");
-            }
-
-            @Override
-            public void connectionLost(Throwable cause) {
-                helper.stop();
-            }
-
-            @Override
-            public void messageArrived(String topic, MqttMessage message) throws Exception {
-                /*ArrayList<String> noteInfo = new ArrayList<String>();
-                noteInfo.add(message.toString());*/
-                Log.d("messageArrived", "msg:"+message);
-            }
-
-            @Override
-            public void deliveryComplete(IMqttDeliveryToken token) {
-
-            }
-        });
-
-        helper.connect();
-    }
-
-    public void publishMessage(MQTTHelper client, Notes note, int qos, String topic, boolean init){
-        try{
-            byte[] encodedPayload;
-            String[] msg = new String[3];
-            if(init) {
-                msg[0] = note.getTitle();
-                msg[1] = note.getNote();
-                msg[2] = note.getDate();
-            }
-            Gson gson = new Gson();
-            String json = gson.toJson(msg); //não aceita arrays
-
-            encodedPayload = json.getBytes(StandardCharsets.UTF_8);
-            MqttMessage message = new MqttMessage(encodedPayload);
-            message.setQos(qos);
-
-            client.mqttAndroidClient.publish(topic, message);
-        } catch (MqttException e){
-            Log.w("O", "MqttException");
-        }
-    }
 }

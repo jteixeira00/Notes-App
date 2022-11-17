@@ -8,14 +8,6 @@
     tools:context=".MainActivity"
     android:id="@+id/relativeLayout">
 
-    <Button
-        android:id="@+id/topics"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Topics"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"/>
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler"
         android:layout_margin="8dp"

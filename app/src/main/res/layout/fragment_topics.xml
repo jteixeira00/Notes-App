@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Topic"
+        android:text="testtopic/"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"/>
 

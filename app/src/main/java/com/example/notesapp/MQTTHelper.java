@@ -11,6 +11,10 @@ import org.eclipse.paho.client.mqttv3.IMqttToken;
 import org.eclipse.paho.client.mqttv3.MqttCallbackExtended;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
+import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
+
+import java.nio.charset.StandardCharsets;
 
 
 public class MQTTHelper {
@@ -25,8 +29,6 @@ public class MQTTHelper {
         this.name = name;
 
         mqttAndroidClient = new MqttAndroidClient(context, server, name);
-
-        Log.d(TAG, "created android client");
     }
 
     public void setCallback(MqttCallbackExtended callback) {
@@ -37,7 +39,6 @@ public class MQTTHelper {
         MqttConnectOptions mqttConnectOptions = new MqttConnectOptions();
         mqttConnectOptions.setAutomaticReconnect(true);
         mqttConnectOptions.setCleanSession(true);
-        Log.d(TAG, "on connection");
         try {
 
             mqttAndroidClient.connect(mqttConnectOptions, null, new IMqttActionListener() {
@@ -45,14 +46,12 @@ public class MQTTHelper {
                 public void onSuccess(IMqttToken asyncActionToken) {
 
                     //Adjusting the set of options that govern the behaviour of Offline (or Disconnected) buffering of messages
-                    Log.d(TAG, "start Success");
                     DisconnectedBufferOptions disconnectedBufferOptions = new DisconnectedBufferOptions();
                     disconnectedBufferOptions.setBufferEnabled(true);
                     disconnectedBufferOptions.setBufferSize(100);
                     disconnectedBufferOptions.setPersistBuffer(false);
                     disconnectedBufferOptions.setDeleteOldestMessages(false);
                     mqttAndroidClient.setBufferOpts(disconnectedBufferOptions);
-                    Log.d(TAG, "end Success");
                 }
 
                 @Override
@@ -63,7 +62,6 @@ public class MQTTHelper {
 
 
         } catch (MqttException ex) {
-            Log.d(TAG, "on Exception");
             ex.printStackTrace();
         }
     }
@@ -77,12 +75,12 @@ public class MQTTHelper {
     }
 
 
-    public void subscribeToTopic(String topic) {
+    public void subscribeToTopic(String topic, int qos) {
         try {
-            mqttAndroidClient.subscribe(topic, 0, null, new IMqttActionListener() {
+            mqttAndroidClient.subscribe(topic, qos, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Log.w(TAG, "Subscribed!");
+                    Log.d(TAG, "Subscribed to" + topic);
                 }
 
                 @Override
@@ -95,6 +93,34 @@ public class MQTTHelper {
             System.err.println("Exception subscribing");
             ex.printStackTrace();
         }
+    }
+
+    public void unsubscribeFromTopic(String topic) throws MqttException {
+            mqttAndroidClient.unsubscribe(topic);
+    }
+
+    public void publish(String msg, int qos, String topic, boolean init){
+        try
+        {
+            byte[] encodedPayload;
+
+            if(init)
+                msg = name.toUpperCase() + ": " + msg;
+
+            encodedPayload = msg.getBytes(StandardCharsets.UTF_8);
+            MqttMessage message = new MqttMessage(encodedPayload);
+            message.setQos(qos);
+
+            mqttAndroidClient.publish(topic, message);
+        } catch (MqttPersistenceException e) {
+            e.printStackTrace();
+        } catch (MqttException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void disconnect() throws MqttException {
+        mqttAndroidClient.disconnect();
     }
 
     public String getName() {

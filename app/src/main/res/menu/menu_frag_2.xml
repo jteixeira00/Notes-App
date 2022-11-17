@@ -5,11 +5,11 @@
         android:id="@+id/save_button"
         android:icon="@drawable/save"
         android:title="@string/save"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/go_back"
-        android:src="@drawable/back_icon"
+        android:icon="@drawable/back_icon"
         android:title="@string/go_back"
         app:showAsAction="ifRoom" />
 </menu>

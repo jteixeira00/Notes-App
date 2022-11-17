@@ -32,8 +32,12 @@ import com.google.android.material.slider.Slider;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.eclipse.paho.client.mqttv3.MqttException;
+
 import java.lang.reflect.Type;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -97,10 +101,10 @@ public class Topics extends Fragment {
         root = inflater.inflate(R.layout.fragment_topics, container, false);
         qosSlider = root.findViewById(R.id.qosSlider);
         input = root.findViewById(R.id.inputTopic);
-        btnSub = (Button) root.findViewById(R.id.subTopic);
-        btnUnsub = (Button) root.findViewById(R.id.unsubTopic);
-        btnUnsubAll = (Button) root.findViewById(R.id.unsubAllTopics);
-        topicList = (TextView) root.findViewById(R.id.subbedTopics);
+        btnSub = root.findViewById(R.id.subTopic);
+        btnUnsub = root.findViewById(R.id.unsubTopic);
+        btnUnsubAll = root.findViewById(R.id.unsubAllTopics);
+        topicList = root.findViewById(R.id.subbedTopics);
         loadTopics();
         setHasOptionsMenu(true);
 
@@ -113,20 +117,44 @@ public class Topics extends Fragment {
         btnUnsub.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                removeTopic(input.getText().toString());
+                try {
+                    removeTopic(input.getText().toString());
+                } catch (MqttException e) {
+                    e.printStackTrace();
+                }
             }
         });
         btnUnsubAll.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                removeAllTopics();
+                try {
+                    removeAllTopics();
+                } catch (MqttException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
         return root;
     }
 
-    private void loadTopics() {
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_frag_3, menu);
+        MenuItem save_button = menu.findItem(R.id.save_buttonTP);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.save_buttonTP) {
+            ((MainActivity) getActivity()).getFrag1();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void loadTopics() { //carrega topicos vindos das user preferences para arraylist classe Topic e altera lista de topicos suscritos
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("TOPIC", MODE_PRIVATE);
 
         Gson gson = new Gson();
@@ -139,24 +167,32 @@ public class Topics extends Fragment {
 
         if (topicsArray == null || topicsArray.size() < 1) {
             topicsArray = new ArrayList<Topic>();
-            topicList.setText("Choose QOS and write topic name, then press SUBSCRIBE to add topic");
+            topicList.setText("Choose QOS and write a TOPIC, then press SUBSCRIBE");
         } else {
             topicList.setText("Subscribed Topics:\n");
             for (int i = 0; i < topicsArray.size(); i++) {
-                topicList.setText(topicList.getText().toString() + '\n' + topicsArray.get(i).topicName + "\nwith qos:" + topicsArray.get(i).qos + "\n\n");
+                topicList.setText(topicList.getText().toString() + '\n' + topicsArray.get(i).topicName + "\nQOS:" + topicsArray.get(i).qos + "\n\n");
             }
         }
     }
 
-    private void addTopic(String topicName, int qos) {
+    private void addTopic(String topicName, int qos) { //
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("TOPIC", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
         Gson gson = new Gson();
 
-        //Fragment1.helper.subscribeToTopic(topicName, qos);
+        MainActivity.helper.subscribeToTopic(topicName, qos);
 
-        topicsArray.add(new Topic(topicName, qos));
+        boolean newTopic = true;
+
+        for (int i = 0; i < topicsArray.size(); i++) {
+            if (topicsArray.get(i).topicName.equals(topicName)) {
+                newTopic = false;
+            }
+        }
+
+        if(newTopic)topicsArray.add(new Topic(topicName, qos));
         String json = gson.toJson(topicsArray);
 
         editor.putString("topics", json);
@@ -165,7 +201,7 @@ public class Topics extends Fragment {
         loadTopics();
     }
 
-    private void removeTopic(String topicName) {
+    private void removeTopic(String topicName) throws MqttException {
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("TOPIC", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
 
@@ -176,11 +212,11 @@ public class Topics extends Fragment {
         }.getType();
 
         topicsArray = gson.fromJson(json, type);
-        for(int i = 0; i < topicsArray.size(); i++){
-            if(i > topicsArray.size())break;
-            if(topicsArray.get(i).topicName.equals(topicName)){
+        for (int i = 0; i < topicsArray.size(); i++) {
+            if (i > topicsArray.size()) break;
+            if (topicsArray.get(i).topicName.equals(topicName)) {
                 topicsArray.remove(i);
-                //Fragment1.helper.unsubscribeFromTopic(topicName);
+                MainActivity.helper.unsubscribeFromTopic(topicName);
                 i--;
             }
         }
@@ -192,7 +228,16 @@ public class Topics extends Fragment {
         loadTopics();
     }
 
-    private void removeAllTopics() {
+    private void removeAllTopics() throws MqttException {
+        //Fragment1.helper.disconnect();
+
+        for (int i = 0; i < topicsArray.size(); i++) {
+            if (i > topicsArray.size()) break;
+            MainActivity.helper.unsubscribeFromTopic(topicsArray.get(i).topicName);
+            topicsArray.remove(i);
+            i--;
+        }
+
         topicsArray = new ArrayList<Topic>();
         SharedPreferences sharedPreferences = getActivity().getSharedPreferences("TOPIC", MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
