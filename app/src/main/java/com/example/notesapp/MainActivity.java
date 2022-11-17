@@ -138,12 +138,12 @@ public class MainActivity extends AppCompatActivity implements fragmentInterface
 
         ArrayList <Topic> topicsArray = gson.fromJson(json, type);
 
-        if(topicsArray.size()>0)return topicsArray;
+        if(topicsArray != null)return topicsArray;
         else return null;
     }
 
     private void connect(ArrayList<Topic> topicsArray) {
-        helper = new MQTTHelper(this, "clientId-vcvCWavi23", "testtopic/yoyo");
+        helper = new MQTTHelper(this, "clientId-vcvCWavi23");
 
         helper.setCallback(new MqttCallbackExtended() {
             @Override

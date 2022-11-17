@@ -25,7 +25,7 @@ public class MQTTHelper {
     private String name;
 
 
-    public MQTTHelper(Context context, String name, String topic) {
+    public MQTTHelper(Context context, String name) {
         this.name = name;
 
         mqttAndroidClient = new MqttAndroidClient(context, server, name);
