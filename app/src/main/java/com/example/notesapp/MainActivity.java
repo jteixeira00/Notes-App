@@ -222,8 +222,6 @@ public class MainActivity extends AppCompatActivity implements fragmentInterface
         startActivity(intent);
     }
 
-
-
     public void goToSendNote(String msg){
         Bundle bundle = new Bundle();
         bundle.putString("msg", msg);

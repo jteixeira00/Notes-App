@@ -5,6 +5,7 @@ import android.os.Bundle;
 
 import android.app.Fragment;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -37,13 +38,9 @@ public class SendNote extends Fragment {
     private String mParam2;
     Slider qosSlider;
     EditText topicInput;
-    Button send;
-    Button cancel;
+    Button sendBtn;
+    Button cancelBtn;
     View root;
-
-    public SendNote() {
-        // Required empty public constructor
-    }
 
     /**
      * Use this factory method to create a new instance of
@@ -76,29 +73,33 @@ public class SendNote extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        root = inflater.inflate(R.layout.fragment_topics, container, false);
-        qosSlider = root.findViewById(R.id.qosSlider);
-        topicInput = root.findViewById(R.id.topicInput);
-        send = root.findViewById(R.id.sendButton);
-        cancel = root.findViewById(R.id.cancelButton);
+        root = inflater.inflate(R.layout.fragment_send_note, container, false);
+        qosSlider = (Slider) root.findViewById(R.id.qosSlider);
+        topicInput = (EditText) root.findViewById(R.id.topicInput);
+        sendBtn = (Button) root.findViewById(R.id.sendButtonSN);
+        cancelBtn = (Button) root.findViewById(R.id.cancelButtonSN);
 
         String msg = getArguments().getString("msg");
 
-        cancel.setOnClickListener(new View.OnClickListener() {
+        Log.d("SEND_NOTE", cancelBtn.getText().toString());
+
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("yoyo", "CANCEL");
                 ((MainActivity) getActivity()).getFrag1();
             }
         });
 
-        send.setOnClickListener(new View.OnClickListener() {
+        sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("yoyo", "SEND");
                 sendNote(msg, (int) qosSlider.getValue(), topicInput.getText().toString(), false);
                 ((MainActivity) getActivity()).getFrag1();
             }
         });
-        return inflater.inflate(R.layout.fragment_send_note, container, false);
+        return root;
     }
 
     @Override
