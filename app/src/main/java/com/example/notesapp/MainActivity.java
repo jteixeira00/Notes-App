@@ -1,8 +1,5 @@
 package com.example.notesapp;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
@@ -10,9 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.notesapp.Fragments.Fragment1;
 import com.example.notesapp.Fragments.NoteTaker;
@@ -160,7 +156,12 @@ public class MainActivity extends AppCompatActivity implements fragmentInterface
 
             @Override
             public void connectionLost(Throwable cause) {
-                helper.stop();
+                try {
+                    helper.stop();
+                }
+                catch(Exception e){
+
+                }
             }
 
             @Override
