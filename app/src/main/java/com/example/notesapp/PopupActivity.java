@@ -15,17 +15,19 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class PopupActivity extends Activity {
+import com.example.notesapp.Fragments.Fragment1;
+
+public class  PopupActivity extends Activity {
 
     private AlertDialog dialog;
-
+    private Fragment1 frag1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_popup);
         Intent intent = getIntent();
         createNewMessagePopup(intent.getStringExtra("note"));
-
+        frag1 = new Fragment1();
         dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
             @Override
             public void onDismiss(DialogInterface dialogInterface) {
@@ -77,10 +79,13 @@ public class PopupActivity extends Activity {
                 dialog.dismiss();
             }
         });
+        String[] finalOutput = output;
         acceptNote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO add to notes
+
+                frag1.newNote(finalOutput[0], finalOutput[1]);
+
                 dialog.dismiss();
             }
         });

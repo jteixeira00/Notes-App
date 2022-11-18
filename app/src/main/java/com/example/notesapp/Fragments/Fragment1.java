@@ -127,6 +127,21 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
         return root;
     }
 
+
+    @Override
+    public void newNote(String title, String note) {
+        db = DB.getInstance(getActivity());
+        Notes new_note = new Notes();
+        new_note.setTitle(title);
+        new_note.setNote(note);
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, d MMM yyyy HH:mm a");
+        Date date = new Date();
+        new_note.setDate(dateFormatter.format(date));
+
+        taskManager.insertNewNote(db, this, new_note);
+    }
+
+
     //calling this in onQueryTextChange != Callback callback, so had to create this function
     public void onQueryTextChangeAuxiliary(String s){
         taskManager.executeOnQueryTextChange(db, s, this);
@@ -218,6 +233,11 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
         taskManager.executeLongItemClick(notesAdapter, db, position,this);
     }
 
+    @Override
+    public void onResume() {
+        taskManager.executeUpdateRecycler(db, this);
+        super.onResume();
+    }
 
     //calling this in onMenuItemClick:onClick != Callback callback, so had to create this function
     public void updateAuxiliary(String value){

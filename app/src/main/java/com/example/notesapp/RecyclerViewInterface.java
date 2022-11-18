@@ -9,4 +9,5 @@ public interface RecyclerViewInterface {
     void onItemClick(int position);
     void sendUpdatedList(List<Notes> filteredList);
     void LongItemClick(int position);
+    void newNote(String title, String note);
 }

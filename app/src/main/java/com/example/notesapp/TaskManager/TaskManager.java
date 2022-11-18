@@ -130,5 +130,15 @@ public class TaskManager {
         });
     }
 
+    public void insertNewNote(DB db, Callback callback, Notes note){
+        executor.execute(() -> {
+            List<Notes> notes = new ArrayList<>();
+            db.dao().insert(note);
+            notes = db.dao().getAll();
+            List<Notes> finalNotes = notes;
+
+        });
+    }
+
 
 }
