@@ -1,5 +1,6 @@
 package com.example.notesapp.TaskManager;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -7,7 +8,9 @@ import android.telecom.Call;
 
 import com.example.notesapp.Adapters.NotesAdapter;
 import com.example.notesapp.Fragments.SendNote;
+import com.example.notesapp.MainActivity;
 import com.example.notesapp.Models.Notes;
+import com.example.notesapp.PopupActivity;
 import com.example.notesapp.db.DB;
 
 import java.util.ArrayList;
@@ -96,14 +99,13 @@ public class TaskManager {
             List<Notes> notes = new ArrayList<>();
             SendNote sender = new SendNote();
 
-            //TODO rest of sent note paramaters
-            sender.sendNote(selectedNote.getTitle() + "&" + selectedNote.getNote(), sender.getQosSlider().getValue(), sender.);
-
             notes = db.dao().getAll();
             List<Notes> finalNotes = notes;
             handler.post(() ->{
                 callback.updateRecycler(finalNotes);
             });
+
+            MainActivity.setSendNoteInfo(selectedNote.getTitle() + "&" + selectedNote.getNote()); //TODO erro nisto -
         });
     }
 

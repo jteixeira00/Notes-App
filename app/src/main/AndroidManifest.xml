@@ -7,7 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
 
-    <application
+    <application android:name="com.example.notesapp.StaticContextFactory"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -16,7 +16,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.NotesApp"
-        tools:targetApi="31">
+        tools:targetApi="31"
+        >
+
         <activity
             android:name=".PopupActivity"
             android:exported="false"
@@ -32,5 +34,4 @@
         </activity>
         <service android:name="org.eclipse.paho.android.service.MqttService" />
     </application>
-
 </manifest>

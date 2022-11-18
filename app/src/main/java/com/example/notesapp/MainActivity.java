@@ -219,27 +219,18 @@ public class MainActivity extends AppCompatActivity implements fragmentInterface
         startActivity(intent);
     }
 
+    public static void setSendNoteInfo(String msg){
+        MainActivity mA = new MainActivity();
 
-    /*private void newNote(String title, String note){
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, d MMM yyyy HH:mm a");
-        Date date = new Date();
+        mA.goToSendNote(msg); //TODO erro aqui - descobrir alternativa? de alterar do frag 1 para o 4 e enviar info
+    }
 
-        Bundle bundle = this.getArguments();
-        if(bundle==null){
-            notes = new Notes();
-        }
-        notes.setTitle(title);
-        notes.setNote(note);
-        notes.setDate(dateFormatter.format(date));
+    private void goToSendNote(String msg){
+        Bundle bundle = new Bundle();
+        bundle.putString("msg", msg);
 
-        Bundle bundleRes = new Bundle();
-        if(bundle == null){
-            bundleRes.putString("req", "insert");
-        }
-        else{
-            bundleRes.putString("req", "update");
-        }
-        bundleRes.putSerializable("note", notes);
-        ((MainActivity)getActivity()).getFrag1(bundleRes);
-    }*/
+        frag4.setArguments(bundle);
+
+        getSendNote();
+    }
 }

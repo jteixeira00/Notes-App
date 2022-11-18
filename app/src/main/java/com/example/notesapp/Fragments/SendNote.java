@@ -12,6 +12,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 
 import com.example.notesapp.MainActivity;
 import com.example.notesapp.R;
@@ -35,7 +36,9 @@ public class SendNote extends Fragment {
     private String mParam1;
     private String mParam2;
     Slider qosSlider;
+    EditText topicInput;
     Button send;
+    Button cancel;
     View root;
 
     public SendNote() {
@@ -75,13 +78,24 @@ public class SendNote extends Fragment {
         // Inflate the layout for this fragment
         root = inflater.inflate(R.layout.fragment_topics, container, false);
         qosSlider = root.findViewById(R.id.qosSlider);
+        topicInput = root.findViewById(R.id.topicInput);
         send = root.findViewById(R.id.sendButton);
+        cancel = root.findViewById(R.id.cancelButton);
+
+        String msg = getArguments().getString("msg");
+
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                ((MainActivity) getActivity()).getFrag1();
+            }
+        });
 
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //sendNote(String msg, (int) qosSlider.getValue(), String topic, boolean init);
-                //TODO preencher com info da nota que vem
+                sendNote(msg, (int) qosSlider.getValue(), topicInput.getText().toString(), false);
+                ((MainActivity) getActivity()).getFrag1();
             }
         });
         return inflater.inflate(R.layout.fragment_send_note, container, false);
