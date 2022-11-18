@@ -17,5 +17,10 @@
     <item
         android:id="@+id/to_topics"
         app:showAsAction="ifRoom"
-        android:title="TOPICS" />
+        android:title="Topics" />
+
+    <item
+        android:id="@+id/close_app"
+        app:showAsAction="ifRoom"
+        android:title="Close App" />
 </menu>

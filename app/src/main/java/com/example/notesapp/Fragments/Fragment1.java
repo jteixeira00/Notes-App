@@ -184,6 +184,8 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
             System.out.println("new note");
         } else if(id == R.id.to_topics){
             ((MainActivity)getActivity()).getTopics();
+        } else if(id == R.id.close_app){
+            System.exit(0);
         }
         return super.onOptionsItemSelected(item);
     }

@@ -95,7 +95,18 @@ public class SendNote extends Fragment {
             @Override
             public void onClick(View view) {
                 Log.d("yoyo", "SEND");
-                sendNote(msg, (int) qosSlider.getValue(), topicInput.getText().toString(), false);
+                String topic = topicInput.getText().toString();
+                topic = topic.replace(" ","");
+                Log.d("aaa", topic);
+                if(topic.contains(",")){
+                    String[] topics = topic.split(",");
+                    for(int i = 0; i < topics.length; i++){
+                        sendNote(msg, (int) qosSlider.getValue(), topics[i], false);
+                    }
+                } else{
+                    sendNote(msg, (int) qosSlider.getValue(), topic, false);
+                }
+
                 ((MainActivity) getActivity()).getFrag1();
             }
         });
