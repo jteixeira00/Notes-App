@@ -51,7 +51,7 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:backgroundTint="#F34444"
-            android:text="Cancel"></Button>
+            android:text="Cancel"/>
 
         <Button
             android:id="@+id/sendButton"
@@ -60,6 +60,6 @@
             android:layout_margin="5dp"
             android:layout_weight="1"
             android:backgroundTint="#2E9C16"
-            android:text="Send"></Button>
+            android:text="Send"/>
     </LinearLayout>
 </LinearLayout>

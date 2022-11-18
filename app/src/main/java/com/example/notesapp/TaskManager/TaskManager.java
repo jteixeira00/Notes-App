@@ -30,6 +30,7 @@ public class TaskManager {
         void itemClickHelper(Notes note);
         void queryChangeHelper(List<Notes> newNotes, String s);
         void LongItemClickHelper(Notes newSelected);
+        void getSendNote(String msg);
     }
 
     public void executeOnCreateView(NotesAdapter notesAdapter, Bundle bundle, DB db, Callback callback){
@@ -105,7 +106,7 @@ public class TaskManager {
                 callback.updateRecycler(finalNotes);
             });
 
-            MainActivity.setSendNoteInfo(selectedNote.getTitle() + "&" + selectedNote.getNote()); //TODO erro nisto -
+            callback.getSendNote(selectedNote.getTitle() + "&" + selectedNote.getNote()); //TODO erro nisto -
         });
     }
 

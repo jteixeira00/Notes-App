@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements fragmentInterface
     Fragment frag4 = new SendNote();
     public static MQTTHelper helper;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements fragmentInterface
         fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
+
 
     //overloaded method
     public void getFrag1(Bundle bundle){
@@ -219,16 +221,11 @@ public class MainActivity extends AppCompatActivity implements fragmentInterface
         startActivity(intent);
     }
 
-    public static void setSendNoteInfo(String msg){
-        MainActivity mA = new MainActivity();
 
-        mA.goToSendNote(msg); //TODO erro aqui - descobrir alternativa? de alterar do frag 1 para o 4 e enviar info
-    }
 
-    private void goToSendNote(String msg){
+    public void goToSendNote(String msg){
         Bundle bundle = new Bundle();
         bundle.putString("msg", msg);
-
         frag4.setArguments(bundle);
 
         getSendNote();

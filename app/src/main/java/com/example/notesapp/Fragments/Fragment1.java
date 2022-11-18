@@ -282,5 +282,8 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
         return false;
     }
 
+    public void getSendNote(String msg){
+        ((MainActivity)getActivity()).goToSendNote(msg);
 
+    }
 }
