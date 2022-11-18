@@ -206,7 +206,7 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
     @Override
     public void onItemClick(int position) {
         taskManager.executeOnItemClick(notesAdapter, db, position, this);
-        //TODO on third item pressed send message - usar fragmento SendNote
+
     }
 
     @Override
@@ -247,6 +247,9 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
     @Override
     public boolean onMenuItemClick(MenuItem menuItem) {
         switch (menuItem.getItemId()){
+            case R.id.send_note:
+                taskManager.executeSendNote(db, selectedNote,this);
+                return true;
             case R.id.delete:
                 taskManager.executeDeleteItem(db, selectedNote,this);
                 return true;

@@ -103,7 +103,11 @@ public class SendNote extends Fragment {
         return super.onOptionsItemSelected(item);
     }
 
-    private void sendNote(String msg, int qos, String topic, boolean init){
+    public Slider getQosSlider() {
+        return qosSlider;
+    }
+
+    public void sendNote(String msg, int qos, String topic, boolean init){
         MainActivity.helper.publish(msg, qos, topic, init);
     }
 }

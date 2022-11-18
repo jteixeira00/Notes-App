@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.telecom.Call;
 
 import com.example.notesapp.Adapters.NotesAdapter;
+import com.example.notesapp.Fragments.SendNote;
 import com.example.notesapp.Models.Notes;
 import com.example.notesapp.db.DB;
 
@@ -18,6 +19,7 @@ import java.util.concurrent.Executors;
 public class TaskManager {
     final Executor executor = Executors.newSingleThreadExecutor();
     final Handler handler = new Handler(Looper.getMainLooper());
+
 
 
     public interface Callback{
@@ -81,6 +83,22 @@ public class TaskManager {
         executor.execute(() -> {
             List<Notes> notes = new ArrayList<>();
             db.dao().delete(selectedNote);
+            notes = db.dao().getAll();
+            List<Notes> finalNotes = notes;
+            handler.post(() ->{
+                callback.updateRecycler(finalNotes);
+            });
+        });
+    }
+
+    public void executeSendNote(DB db, Notes selectedNote, Callback callback){
+        executor.execute(() -> {
+            List<Notes> notes = new ArrayList<>();
+            SendNote sender = new SendNote();
+
+            //TODO rest of sent note paramaters
+            sender.sendNote(selectedNote.getTitle() + "&" + selectedNote.getNote(), sender.getQosSlider().getValue(), sender.);
+
             notes = db.dao().getAll();
             List<Notes> finalNotes = notes;
             handler.post(() ->{
