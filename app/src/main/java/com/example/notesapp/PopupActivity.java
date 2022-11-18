@@ -37,11 +37,8 @@ public class  PopupActivity extends Activity {
     }
 
     public void createNewMessagePopup(String message){
-        Log.d("popup crll", "a");
         AlertDialog.Builder dialogBd = new AlertDialog.Builder(this);
         final View newMessagePopupView = getLayoutInflater().inflate(R.layout.new_message_popup, null);
-
-        Log.d("popup crll", "b");
 
 
         TextView newNoteTitle = (TextView) newMessagePopupView.findViewById(R.id.newNoteTitleContent);
@@ -70,8 +67,6 @@ public class  PopupActivity extends Activity {
         int height = metrics.heightPixels;
 
         dialog.getWindow().setLayout((6 * width)/7, (4 * height)/5);
-
-        Log.d("popup", "d");
 
         denyNote.setOnClickListener(new View.OnClickListener() {
             @Override

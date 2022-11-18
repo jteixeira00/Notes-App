@@ -81,12 +81,9 @@ public class SendNote extends Fragment {
 
         String msg = getArguments().getString("msg");
 
-        Log.d("SEND_NOTE", cancelBtn.getText().toString());
-
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("yoyo", "CANCEL");
                 ((MainActivity) getActivity()).getFrag1();
             }
         });
@@ -94,17 +91,15 @@ public class SendNote extends Fragment {
         sendBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("yoyo", "SEND");
+                Integer qos = (int) qosSlider.getValue();
                 String topic = topicInput.getText().toString();
-                topic = topic.replace(" ","");
-                Log.d("aaa", topic);
                 if(topic.contains(",")){
                     String[] topics = topic.split(",");
                     for(int i = 0; i < topics.length; i++){
-                        sendNote(msg, (int) qosSlider.getValue(), topics[i], false);
+                        sendNote(msg, qos, topics[i], false);
                     }
                 } else{
-                    sendNote(msg, (int) qosSlider.getValue(), topic, false);
+                    sendNote(msg, qos, topic, false);
                 }
 
                 ((MainActivity) getActivity()).getFrag1();

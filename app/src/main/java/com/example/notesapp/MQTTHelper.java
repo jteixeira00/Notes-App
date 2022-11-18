@@ -80,7 +80,7 @@ public class MQTTHelper {
             mqttAndroidClient.subscribe(topic, qos, null, new IMqttActionListener() {
                 @Override
                 public void onSuccess(IMqttToken asyncActionToken) {
-                    Log.d(TAG, "Subscribed to" + topic);
+                    Log.d(TAG, "Subscribed to " + topic);
                 }
 
                 @Override

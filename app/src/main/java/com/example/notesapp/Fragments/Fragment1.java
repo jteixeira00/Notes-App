@@ -156,6 +156,8 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu,inflater);
+        getActivity().invalidateOptionsMenu();
         inflater.inflate(R.menu.menu_frag_1, menu);
         MenuItem menuItem = menu.findItem(R.id.search);
         MenuItem toTopics = menu.findItem(R.id.to_topics);
@@ -173,7 +175,6 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
                 return false;
             }
         });
-        super.onCreateOptionsMenu(menu,inflater);
     }
 
     @Override

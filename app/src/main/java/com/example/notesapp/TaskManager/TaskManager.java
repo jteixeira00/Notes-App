@@ -106,7 +106,7 @@ public class TaskManager {
                 callback.updateRecycler(finalNotes);
             });
 
-            callback.getSendNote(selectedNote.getTitle() + "&" + selectedNote.getNote()); //TODO erro nisto -
+            callback.getSendNote(selectedNote.getTitle() + "&" + selectedNote.getNote());
         });
     }
 

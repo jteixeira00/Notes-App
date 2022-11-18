@@ -21,6 +21,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.notesapp.Adapters.NotesAdapter;
 import com.example.notesapp.MainActivity;
@@ -140,6 +141,7 @@ public class Topics extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        menu.clear();
         inflater.inflate(R.menu.menu_frag_3, menu);
         MenuItem save_button = menu.findItem(R.id.save_buttonTP);
         super.onCreateOptionsMenu(menu, inflater);
@@ -193,6 +195,7 @@ public class Topics extends Fragment {
         }
 
         if(newTopic)topicsArray.add(new Topic(topicName, qos));
+        else Toast.makeText(getActivity(),"Already subscribed to topic",Toast.LENGTH_SHORT).show();
         String json = gson.toJson(topicsArray);
 
         editor.putString("topics", json);
