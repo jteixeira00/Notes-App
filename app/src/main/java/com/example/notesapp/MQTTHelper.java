@@ -20,8 +20,8 @@ import java.nio.charset.StandardCharsets;
 public class MQTTHelper {
     public MqttAndroidClient mqttAndroidClient;
 
-    final String server = "tcp://broker.hivemq.com:1883"; //TODO - Place the IP here
-    final String TAG = "MQTT_HELPER"; //TODO - This is just for logs
+    final String server = "tcp://broker.hivemq.com:1883";
+    final String TAG = "MQTT_HELPER";
     private String name;
 
 

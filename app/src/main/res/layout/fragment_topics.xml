@@ -28,8 +28,33 @@
         android:text="testtopic/"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"/>
-
-    <Button
+    <LinearLayout
+        android:id="@+id/LinearLayout02"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_alignParentBottom="true">
+        <Button
+            android:id="@+id/unsubTopic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#F34444"
+            android:layout_weight="1"
+            android:text="Unsubscribe"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="5dp">
+        </Button>
+        <Button
+            android:id="@+id/subTopic"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="#2E9C16"
+            android:text="Subscribe"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="20dp">
+        </Button>
+    </LinearLayout>
+    <!--<Button
         android:id="@+id/subTopic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,7 +68,7 @@
         android:layout_height="wrap_content"
         android:text="Unsubscribe"
         android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"/>
+        android:layout_marginRight="20dp"/>-->
 
     <Button
         android:id="@+id/unsubAllTopics"
@@ -51,7 +76,8 @@
         android:layout_height="wrap_content"
         android:text="Unsubscribe All"
         android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"/>
+        android:layout_marginRight="20dp"
+        android:backgroundTint="#F34444"/>
 
     <ScrollView android:id="@+id/ScrollView01"
         android:layout_width="match_parent"

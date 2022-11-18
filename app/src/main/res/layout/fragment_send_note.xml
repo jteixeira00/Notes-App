@@ -6,17 +6,61 @@
     tools:context=".Fragments.SendNote"
     android:orientation="vertical">
 
+    <TextView
+        android:id="@+id/sendNote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:text="Send Note"
+        android:textSize="12pt"
+        tools:layout_editor_absoluteX="140dp"
+        tools:layout_editor_absoluteY="123dp" />
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/qosSlider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:valueFrom="0"
+        android:valueTo="2"
+        android:stepSize="1"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="35dp"
+        />
+
     <EditText
-        android:id="@+id/editTextTextPersonName"
+        android:id="@+id/topicInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="testtopic/" />
+        android:text="testtopic/"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"/>
 
-    <Button
-        android:id="@+id/sendButton"
+    <LinearLayout
+        android:id="@+id/LinearLayout02"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Send" />
+        android:layout_alignParentBottom="true">
+
+        <Button
+            android:id="@+id/cancelButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:backgroundTint="#F34444"
+            android:text="Cancel"></Button>
+
+        <Button
+            android:id="@+id/sendButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"
+            android:layout_weight="1"
+            android:backgroundTint="#2E9C16"
+            android:text="Send"></Button>
+    </LinearLayout>
 </LinearLayout>

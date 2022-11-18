@@ -2,12 +2,17 @@ package com.example.notesapp;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.notesapp.Fragments.Fragment1;
 import com.example.notesapp.Fragments.NoteTaker;
@@ -38,7 +43,6 @@ public class MainActivity extends AppCompatActivity implements fragmentInterface
     Fragment frag3 = new Topics();
     Fragment frag4 = new SendNote();
     public static MQTTHelper helper;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -200,13 +204,21 @@ public class MainActivity extends AppCompatActivity implements fragmentInterface
         String[] output = new String[2];
         if(message.indexOf('&')!=-1){
             output = message.split("&", 2);
-            Log.d("a", "has &");
         } else {
             output[0] = "titulo #" + (int) Math.floor(Math.random() * 1000);
             output[1] = message;
         }
+        startNewNotePopup(message);
+
         //newNote(output[0], output[1]);
     }
+
+    void startNewNotePopup(String msg){
+        Intent intent = new Intent(getApplicationContext(), PopupActivity.class);
+        intent.putExtra("note", msg);
+        startActivity(intent);
+    }
+
 
     /*private void newNote(String title, String note){
         SimpleDateFormat dateFormatter = new SimpleDateFormat("EEE, d MMM yyyy HH:mm a");

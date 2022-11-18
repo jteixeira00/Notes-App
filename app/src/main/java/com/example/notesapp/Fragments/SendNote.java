@@ -1,5 +1,6 @@
 package com.example.notesapp.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import android.app.Fragment;
@@ -25,12 +26,12 @@ import org.eclipse.paho.client.mqttv3.MqttException;
  */
 public class SendNote extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
+
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
+
     private String mParam1;
     private String mParam2;
     Slider qosSlider;
@@ -49,7 +50,7 @@ public class SendNote extends Fragment {
      * @param param2 Parameter 2.
      * @return A new instance of fragment SendNote.
      */
-    // TODO: Rename and change types and number of parameters
+
     public static SendNote newInstance(String param1, String param2) {
         SendNote fragment = new SendNote();
         Bundle args = new Bundle();
@@ -79,7 +80,8 @@ public class SendNote extends Fragment {
         send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //sendNote(String msg, (int) qosSlider.getValue(), String topic, boolean init); TODO preencher com info da nota que vem
+                //sendNote(String msg, (int) qosSlider.getValue(), String topic, boolean init);
+                //TODO preencher com info da nota que vem
             }
         });
         return inflater.inflate(R.layout.fragment_send_note, container, false);

@@ -191,7 +191,7 @@ public class Fragment1 extends Fragment implements RecyclerViewInterface, PopupM
     @Override
     public void onItemClick(int position) {
         taskManager.executeOnItemClick(notesAdapter, db, position, this);
-
+        //TODO on third item pressed send message - usar fragmento SendNote
     }
 
     @Override
